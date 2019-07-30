@@ -23,8 +23,12 @@ export default createReactClass({
         }
     },
     render() {
-        const { rows, columns, filters, onFilterChange, onClearFilters } = this.props
-        const emptyFilters = filters.every(f => !f.value.length)
+        const { rows, columns, onFilterChange, onClearFilters } = this.props
+        const filters = this.props.filters.map(f => ({
+            ...f,
+            value: f.value || []
+        }))
+        const areFiltersEmpty = filters.every(f => !f.value.length)
 
         return (
             <div>
@@ -35,12 +39,14 @@ export default createReactClass({
                     items={[... new Set(rows.map(r => r[f.dataKey]))].sort()}
                     onChange={e => onFilterChange(f.dataKey, e.target.value)}
                 />)}
-                {!emptyFilters
+                {!areFiltersEmpty
                     && <Button fullWidth variant="contained" onClick={onClearFilters}>
                         Clear Filters
                     </Button>}
                 <Table
-                    rows={rows.filter(r => filters.every(f => !f.value.length || f.value.includes(r[f.dataKey])))}
+                    rows={areFiltersEmpty
+                        ? rows
+                        : rows.filter(r => filters.every(f => f.value.includes(r[f.dataKey])))}
                     columns={columns} />
             </div>
         )

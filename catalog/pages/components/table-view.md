@@ -11,8 +11,8 @@ state: {
         {label: 'Rating from 10', dataKey: 'rating'}
     ]}
     filters={[
-        {label: 'Genre', dataKey: 'genre', value: state.filters['genre'] || []},
-        {label: 'Rating', dataKey: 'rating', value: state.filters['rating'] || []}
+        {label: 'Genre', dataKey: 'genre', value: state.filters['genre']},
+        {label: 'Rating', dataKey: 'rating', value: state.filters['rating']}
     ]}
     onFilterChange={(dataKey, value) => setState({
         filters: {
