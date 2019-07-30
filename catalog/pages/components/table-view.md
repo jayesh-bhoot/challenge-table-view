@@ -1,9 +1,6 @@
 ``` react
 state: {
-    filters: [
-        {label: 'Genre', dataKey: 'genre', value: []},
-        {label: 'Rating', dataKey: 'rating', value: []}
-    ]
+    filters: {}
 }
 ---
 <TableView
@@ -13,11 +10,15 @@ state: {
         {label: 'Genre', dataKey: 'genre' },
         {label: 'Rating from 10', dataKey: 'rating'}
     ]}
-    filters={state.filters}
+    filters={[
+        {label: 'Genre', dataKey: 'genre', value: state.filters['genre'] || []},
+        {label: 'Rating', dataKey: 'rating', value: state.filters['rating'] || []}
+    ]}
     onFilterChange={(dataKey, value) => setState({
-        filters: state.filters.map(f => f.dataKey === dataKey ? {...f, value} : f)
+        filters: {
+            ...state.filters,
+            [dataKey]: value
+        }
     })}
-    onClearFilters={() => setState({
-        filters: state.filters.map(f => ({...f, value: []}))
-    })}/>
+    onClearFilters={() => setState({filters: {}})}/>
 ```
