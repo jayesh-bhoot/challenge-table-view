@@ -1,8 +1,8 @@
 ``` react
 state: {
     filters: [
-        {key: 'genre', value: []},
-        {key: 'rating', value: []}
+        {label: 'Genre', key: 'genre', value: []},
+        {label: 'Rating', key: 'rating', value: []}
     ]
 }
 ---
@@ -16,7 +16,7 @@ state: {
     filters={state.filters}
     onFilterChange={(key, value) => setState({
         filters: state.filters.map(f => f.key === key
-            ? {'key': key, 'value': value}
+            ? {key, value}
             : f)
     })}/>
 ```

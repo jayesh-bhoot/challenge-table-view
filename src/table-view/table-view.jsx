@@ -27,7 +27,7 @@ export default createReactClass({
             <div>
                 {filters.map(f => <Select
                     multiple
-                    label={f.key}
+                    label={f.label}
                     value={f.value}
                     items={[... new Set(rows.map(r => r[f.key]))].sort()}
                     onChange={e => onFilterChange(f.key, e.target.value)}
