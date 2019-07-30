@@ -31,18 +31,20 @@ export default createReactClass({
         const areFiltersEmpty = filters.every(f => !f.value.length)
 
         return (
-            <div>
-                {filters.map(f => <Select
-                    multiple
-                    label={f.label}
-                    value={f.value}
-                    items={[... new Set(rows.map(r => r[f.dataKey]))].sort()}
-                    onChange={e => onFilterChange(f.dataKey, e.target.value)}
-                />)}
-                {!areFiltersEmpty
-                    && <Button fullWidth variant="contained" onClick={onClearFilters}>
-                        Clear Filters
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <div style={{ display: 'flex' }}>
+                    {filters.map(f => <Select
+                        multiple
+                        label={f.label}
+                        value={f.value}
+                        items={[... new Set(rows.map(r => r[f.dataKey]))].sort()}
+                        onChange={e => onFilterChange(f.dataKey, e.target.value)}
+                    />)}
+                    {!areFiltersEmpty
+                        && <Button variant="contained" onClick={onClearFilters}>
+                            Clear Filters
                     </Button>}
+                </div>
                 <Table
                     rows={areFiltersEmpty
                         ? rows
