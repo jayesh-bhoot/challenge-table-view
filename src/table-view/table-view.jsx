@@ -22,13 +22,10 @@ export default createReactClass({
       filters: []
     }
   },
+
   render () {
     const { rows, columns, onFilterChange, onClearFilters } = this.props
-    const filters = this.props.filters.map(f => ({
-      ...f,
-      value: f.value || []
-    }))
-    const allFiltersEmpty = filters.every(f => !f.value.length)
+    const filters = sanitizeFilters(this.props.filters)
 
     return (
       <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -39,28 +36,43 @@ export default createReactClass({
               multiple
               label={f.label}
               value={f.value}
-              items={[...new Set(rows.map(r => r[f.dataKey]))].sort()}
+              items={extractFilterValues(rows, f)}
               onChange={e => onFilterChange(f.dataKey, e.target.value)}
             />
           ))}
 
           {
-            !allFiltersEmpty &&
+            !allFiltersEmpty(filters) &&
             <Button variant='contained' onClick={onClearFilters}>
-                Clear Filters
-            </Button>
+              Clear Filters</Button>
           }
         </div>
         <div>
-          <Table
-            rows={allFiltersEmpty
-              ? rows
-              : rows.filter(r => filters.every(f =>
-                !f.value.length ||
-                                f.value.includes(r[f.dataKey])))}
-            columns={columns} />
+          <Table rows={filterRows(rows, filters)} columns={columns} />
         </div>
       </div>
     )
   }
 })
+
+const sanitizeFilters = filters => {
+  return filters.map(f => ({ ...f, value: f.value || [] }))
+}
+
+const extractFilterValues = (rows, filter) => {
+  const values = rows.map(r => r[filter.dataKey])
+  const dedup = [...new Set(values)]
+  const sorted = dedup.some(x => typeof x !== 'number')
+    ? dedup.sort()
+    : dedup.sort((a, b) => a - b)
+  return sorted
+}
+
+const allFiltersEmpty = filters => filters.every(f => !f.value.length)
+
+const filterRows = (rows, filters) => {
+  return allFiltersEmpty(filters)
+    ? rows
+    : rows.filter(r => filters.every(f =>
+      !f.value.length || f.value.includes(r[f.dataKey])))
+}
