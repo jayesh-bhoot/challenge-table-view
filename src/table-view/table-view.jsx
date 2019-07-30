@@ -1,10 +1,10 @@
 import React from 'react'
 import createReactClass from 'create-react-class'
 import PropTypes from 'prop-types'
-import { Button } from '@material-ui/core'
 
 import { default as Table } from '../table'
 import { default as Select } from '../select'
+import { default as Button } from '../button'
 
 export default createReactClass({
   displayName: 'TableView',
@@ -28,7 +28,7 @@ export default createReactClass({
       ...f,
       value: f.value || []
     }))
-    const areFiltersEmpty = filters.every(f => !f.value.length)
+    const allFiltersEmpty = filters.every(f => !f.value.length)
 
     return (
       <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -44,15 +44,16 @@ export default createReactClass({
             />
           ))}
 
-          {!areFiltersEmpty &&
-          <Button variant='contained' onClick={onClearFilters}>
-                            Clear Filters
-          </Button>
+          {
+            !allFiltersEmpty &&
+            <Button variant='contained' onClick={onClearFilters}>
+                Clear Filters
+            </Button>
           }
         </div>
         <div>
           <Table
-            rows={areFiltersEmpty
+            rows={allFiltersEmpty
               ? rows
               : rows.filter(r => filters.every(f =>
                 !f.value.length ||
