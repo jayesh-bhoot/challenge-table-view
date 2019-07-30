@@ -16,7 +16,10 @@ state: {
     filters={state.filters}
     onFilterChange={(key, value) => setState({
         filters: state.filters.map(f => f.key === key
-            ? {key, value}
+            ? {...f, value}
             : f)
+    })}
+    onClearFilters={() => setState({
+        filters: state.filters.map(f => ({...f, value: []}))
     })}/>
 ```

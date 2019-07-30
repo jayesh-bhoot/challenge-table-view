@@ -1,6 +1,7 @@
 import React from 'react'
 import createReactClass from 'create-react-class'
 import PropTypes from 'prop-types'
+import { Button } from '@material-ui/core'
 
 import { default as Table } from '../table'
 import { default as Select } from '../select'
@@ -22,7 +23,9 @@ export default createReactClass({
         }
     },
     render() {
-        const { rows, columns, filters, onFilterChange } = this.props
+        const { rows, columns, filters, onFilterChange, onClearFilters } = this.props
+        const noFilters = filters.every(f => !f.value.length)
+
         return (
             <div>
                 {filters.map(f => <Select
@@ -32,6 +35,10 @@ export default createReactClass({
                     items={[... new Set(rows.map(r => r[f.key]))].sort()}
                     onChange={e => onFilterChange(f.key, e.target.value)}
                 />)}
+                {!noFilters
+                    && <Button fullWidth variant="contained" onClick={onClearFilters}>
+                        Clear Filters
+                    </Button>}
                 <Table
                     rows={rows.filter(r => filters.every(f => !f.value.length || f.value.includes(r[f.key])))}
                     columns={columns} />
