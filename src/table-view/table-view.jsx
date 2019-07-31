@@ -29,7 +29,7 @@ export default createReactClass({
 
     return (
       <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <div style={{ display: 'flex', width: '50%' }}>
+        <div style={{ display: 'flex', width: '50%', alignItems: 'stretch' }}>
           {filters.map(f => (
             <div style={{ flex: '1', marginLeft: '10px' }}>
               <Select
@@ -43,16 +43,13 @@ export default createReactClass({
             </div>
           ))}
 
-          <div style={{
+          <Button style={{
             flex: 1,
-            alignSelf: 'flex-end',
             marginLeft: '10px',
             visibility: allFiltersEmpty(filters) ? 'hidden' : 'visible'
-          }}>
-            <Button fullWidth variant='contained' onClick={onClearFilters}>
-              Clear Filters
-            </Button>
-          </div>
+          }} fullWidth variant='contained' onClick={onClearFilters}>
+            Clear Filters
+          </Button>
         </div>
         <Table rows={filterRows(rows, filters)} columns={columns} />
       </div>
