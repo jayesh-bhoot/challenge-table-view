@@ -15,7 +15,7 @@ export default createReactClass({
     onFilterChange: PropTypes.func,
     onClearFilters: PropTypes.func
   },
-  getDefaultProps () {
+  getDefaultProps() {
     return {
       rows: [],
       columns: [],
@@ -23,33 +23,38 @@ export default createReactClass({
     }
   },
 
-  render () {
+  render() {
     const { rows, columns, onFilterChange, onClearFilters } = this.props
     const filters = sanitizeFilters(this.props.filters)
 
     return (
       <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <div style={{ display: 'flex' }}>
+        <div style={{ display: 'flex', width: '50%' }}>
           {filters.map(f => (
-            <Select
-              key={f.dataKey}
-              multiple
-              label={f.label}
-              value={f.value}
-              items={extractFilterValues(rows, f)}
-              onChange={e => onFilterChange(f.dataKey, e.target.value)}
-            />
+            <div style={{ flex: '1', marginLeft: '10px' }}>
+              <Select
+                key={f.dataKey}
+                multiple
+                label={f.label}
+                value={f.value}
+                items={extractFilterValues(rows, f)}
+                onChange={e => onFilterChange(f.dataKey, e.target.value)}
+              />
+            </div>
           ))}
 
-          {
-            !allFiltersEmpty(filters) &&
-            <Button variant='contained' onClick={onClearFilters}>
-              Clear Filters</Button>
-          }
+          <div style={{
+            flex: 1,
+            alignSelf: 'flex-end',
+            marginLeft: '10px',
+            visibility: allFiltersEmpty(filters) ? 'hidden' : 'visible'
+          }}>
+            <Button fullWidth variant='contained' onClick={onClearFilters}>
+              Clear Filters
+            </Button>
+          </div>
         </div>
-        <div>
-          <Table rows={filterRows(rows, filters)} columns={columns} />
-        </div>
+        <Table rows={filterRows(rows, filters)} columns={columns} />
       </div>
     )
   }
