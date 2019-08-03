@@ -31,9 +31,8 @@ export default createReactClass({
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         <div style={{ display: 'flex', width: '50%', alignItems: 'stretch' }}>
           {filters.map(f => (
-            <div style={{ flex: '1', marginLeft: '10px' }}>
+            <div key={f.dataKey} style={{ flex: '1', marginLeft: '10px' }}>
               <Select
-                key={f.dataKey}
                 multiple
                 label={f.label}
                 value={f.value}
