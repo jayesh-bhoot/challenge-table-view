@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should render a button 1`] = `
+<WithStyles(Button)
+  classes={
+    Object {
+      "root": "WithStyles-Button--root-1",
+    }
+  }
+>
+   Hello 
+</WithStyles(Button)>
+`;
