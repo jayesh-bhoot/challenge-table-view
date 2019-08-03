@@ -1,13 +1,16 @@
 import React from 'react'
 import createReactClass from 'create-react-class'
 import PropTypes from 'prop-types'
+import { withStyles } from '@material-ui/core'
 
 import { default as Table } from '../table'
 import { default as Select } from '../select'
 import { default as Button } from '../button'
 
-export default createReactClass({
+
+const TableView = createReactClass({
   displayName: 'TableView',
+
   propTypes: {
     rows: PropTypes.array,
     columns: PropTypes.array,
@@ -15,6 +18,7 @@ export default createReactClass({
     onFilterChange: PropTypes.func,
     onClearFilters: PropTypes.func
   },
+
   getDefaultProps() {
     return {
       rows: [],
@@ -24,14 +28,17 @@ export default createReactClass({
   },
 
   render() {
-    const { rows, columns, onFilterChange, onClearFilters } = this.props
+    const {
+      classes,
+      rows, columns,
+      onFilterChange, onClearFilters } = this.props
     const filters = sanitizeFilters(this.props.filters)
 
     return (
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <div style={{ display: 'flex', width: '50%', alignItems: 'stretch' }}>
+      <div className={classes.rootContainer}>
+        <div className={classes.filterSetContainer}>
           {filters.map(f => (
-            <div key={f.dataKey} style={{ flex: '1', marginLeft: '10px' }}>
+            <div key={f.dataKey} className={classes.filterContainer}>
               <Select
                 multiple
                 label={f.label}
@@ -42,14 +49,18 @@ export default createReactClass({
             </div>
           ))}
 
-          <Button style={{
-            flex: 1,
-            marginLeft: '10px',
-            visibility: allFiltersEmpty(filters) ? 'hidden' : 'visible'
-          }} fullWidth variant='contained' onClick={onClearFilters}>
-            Clear Filters
-          </Button>
+          <div className={classes.filterResetContainer}>
+            {
+              !allFiltersEmpty(filters)
+              && <Button fullWidth
+                variant='contained'
+                onClick={onClearFilters}>
+                Clear Filters
+              </Button>
+            }
+          </div>
         </div>
+
         <Table rows={filterRows(rows, filters)} columns={columns} />
       </div>
     )
@@ -77,3 +88,24 @@ const filterRows = (rows, filters) => {
     : rows.filter(r => filters.every(f =>
       !f.value.length || f.value.includes(r[f.dataKey])))
 }
+
+const styles = () => ({
+  rootContainer: {
+    display: 'flex',
+    flexDirection: 'column'
+  },
+  filterSetContainer: {
+    display: 'flex',
+    width: '50%',
+    alignItems: 'stretch'
+  },
+  filterContainer: {
+    flex: '1',
+    marginLeft: '10px'
+  },
+  filterResetContainer: {
+    flex: 1,
+    marginLeft: '10px',
+  }
+})
+export default withStyles(styles)(TableView)
