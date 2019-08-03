@@ -1,90 +1,65 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Unfiltered TableView renders a TableView 1`] = `
-<div
-  style={
+exports[`TableView with empty filters renders a TableView 1`] = `
+<TableView
+  classes={
     Object {
-      "display": "flex",
-      "flexDirection": "column",
+      "filterContainer": "TableView-filterContainer-3",
+      "filterResetContainer": "TableView-filterResetContainer-4",
+      "filterSetContainer": "TableView-filterSetContainer-2",
+      "rootContainer": "TableView-rootContainer-1",
     }
   }
->
-  <div
-    style={
+  columns={
+    Array [
       Object {
-        "display": "flex",
-      }
-    }
-  >
-    <Select
-      items={
-        Array [
-          25,
-          30,
-        ]
-      }
-      key="age"
-      label="Age"
-      multiple={true}
-      onChange={[Function]}
-      value={Array []}
-    />
-    <Select
-      items={
-        Array [
-          "Female",
-          "Male",
-          "Other",
-        ]
-      }
-      key="gender"
-      label="Gender"
-      multiple={true}
-      onChange={[Function]}
-      value={Array []}
-    />
-  </div>
-  <div>
-    <WithStyles(Table)
-      columns={
-        Array [
-          Object {
-            "dataKey": "name",
-            "label": "Name",
-          },
-          Object {
-            "dataKey": "age",
-            "label": "Age",
-          },
-          Object {
-            "dataKey": "gender",
-            "label": "Gender",
-          },
-        ]
-      }
-      rows={
-        Array [
-          Object {
-            "age": 25,
-            "gender": "Male",
-            "id": 1245,
-            "name": "Mike",
-          },
-          Object {
-            "age": 30,
-            "gender": "Female",
-            "id": 46874,
-            "name": "Jennifer",
-          },
-          Object {
-            "age": 25,
-            "gender": "Other",
-            "id": 46874,
-            "name": "Stella",
-          },
-        ]
-      }
-    />
-  </div>
-</div>
+        "dataKey": "name",
+        "label": "Name",
+      },
+      Object {
+        "dataKey": "age",
+        "label": "Age",
+      },
+      Object {
+        "dataKey": "gender",
+        "label": "Gender",
+      },
+    ]
+  }
+  filters={
+    Array [
+      Object {
+        "dataKey": "age",
+        "label": "Age",
+      },
+      Object {
+        "dataKey": "gender",
+        "defaultValue": Array [],
+        "label": "Gender",
+      },
+    ]
+  }
+  rows={
+    Array [
+      Object {
+        "age": 25,
+        "gender": "Male",
+        "id": 1245,
+        "name": "Mike",
+      },
+      Object {
+        "age": 30,
+        "gender": "Female",
+        "id": 46874,
+        "name": "Jennifer",
+      },
+      Object {
+        "age": 25,
+        "gender": "Other",
+        "id": 46874,
+        "name": "Stella",
+      },
+    ]
+  }
+/>
 `;

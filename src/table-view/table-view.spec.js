@@ -5,7 +5,7 @@ import { TableRow } from '@material-ui/core'
 import TableView from './table-view'
 import { default as Select } from '../select'
 
-describe('Unfiltered TableView', () => {
+describe('TableView with empty filters', () => {
   const props = {
     columns: [
       { label: 'Name', dataKey: 'name' },
@@ -18,8 +18,8 @@ describe('Unfiltered TableView', () => {
       { name: 'Stella', age: 25, id: 46874, gender: 'Other' }
     ],
     filters: [
-      { label: 'Age', dataKey: 'age', value: undefined },
-      { label: 'Gender', dataKey: 'gender', value: [] }
+      { label: 'Age', dataKey: 'age' },
+      { label: 'Gender', dataKey: 'gender', defaultValue: [] }
     ]
   }
 
@@ -50,7 +50,7 @@ describe('Unfiltered TableView', () => {
 })
 
 
-describe('Filtered TableView', () => {
+describe('TableView with populated filters', () => {
   const props = {
     columns: [
       { label: 'Name', dataKey: 'name' },
@@ -60,10 +60,12 @@ describe('Filtered TableView', () => {
     rows: [
       { name: 'Mike', age: 25, id: 1245, gender: 'Male' },
       { name: 'Jennifer', age: 30, id: 46874, gender: 'Female' },
-      { name: 'Stella', age: 25, id: 46874, gender: 'Other' }
+      { name: 'Stella', age: 24, id: 46874, gender: 'Other' },
+      { name: 'Joey', age: 24, id: 46874, gender: 'Male' }
     ],
     filters: [
-      { label: 'Age', dataKey: 'age', value: [25] }
+      { label: 'Age', dataKey: 'age', defaultValue: [24, 25] },
+      { label: 'Gender', dataKey: 'gender', defaultValue: ['Male'] }
     ]
   }
 
@@ -75,10 +77,5 @@ describe('Filtered TableView', () => {
   test('should count 1 header plus 2 filtered data rows', () => {
     const wrapper = mount(<TableView {...props} />)
     expect(wrapper.find(TableRow)).toHaveLength(3)
-  })
-
-  test('should verify 1 value in filter select', () => {
-    const wrapper = mount(<TableView {...props} />)
-    expect(wrapper.find(Select).props().value).toEqual([25])
   })
 })

@@ -14,9 +14,7 @@ const TableView = createReactClass({
   propTypes: {
     rows: PropTypes.array,
     columns: PropTypes.array,
-    filters: PropTypes.array,
-    onFilterChange: PropTypes.func,
-    onClearFilters: PropTypes.func
+    filters: PropTypes.array
   },
 
   getDefaultProps() {
@@ -27,12 +25,33 @@ const TableView = createReactClass({
     }
   },
 
+  getInitialState() {
+    const filters = initializeFilterState(this.props.filters, this.props.rows)
+    const filteredRows = filterRows(this.props.rows, filters)
+    return { filters, filteredRows }
+  },
+
+  handleFilterChange(dataKey, selectedValues) {
+    const filters = updateFilters(
+      this.state.filters,
+      f => f.dataKey === dataKey ? { ...f, selectedValues } : f)
+    const filteredRows = filterRows(this.props.rows, filters)
+
+    this.setState({ filters, filteredRows })
+  },
+
+  handleFiltersReset() {
+    const filters = updateFilters(
+      this.state.filters,
+      f => ({ ...f, selectedValues: [] }))
+    const filteredRows = this.props.rows
+
+    this.setState({ filters, filteredRows })
+  },
+
   render() {
-    const {
-      classes,
-      rows, columns,
-      onFilterChange, onClearFilters } = this.props
-    const filters = sanitizeFilters(this.props.filters)
+    const { classes, columns } = this.props
+    const { filters, filteredRows } = this.state
 
     return (
       <div className={classes.rootContainer}>
@@ -42,9 +61,9 @@ const TableView = createReactClass({
               <Select
                 multiple
                 label={f.label}
-                value={f.value}
-                items={extractFilterValues(rows, f)}
-                onChange={e => onFilterChange(f.dataKey, e.target.value)}
+                value={f.selectedValues}
+                items={f.allValues}
+                onChange={e => this.handleFilterChange(f.dataKey, e.target.value)}
               />
             </div>
           ))}
@@ -54,25 +73,36 @@ const TableView = createReactClass({
               !allFiltersEmpty(filters)
               && <Button fullWidth
                 variant='contained'
-                onClick={onClearFilters}>
+                onClick={this.handleFiltersReset}>
                 Clear Filters
               </Button>
             }
           </div>
         </div>
 
-        <Table rows={filterRows(rows, filters)} columns={columns} />
+        <Table rows={filteredRows} columns={columns} />
       </div>
     )
   }
 })
 
-const sanitizeFilters = filters => {
-  return filters.map(f => ({ ...f, value: f.value || [] }))
+const initializeFilterState = (filters, rows) => {
+  return filters.map(f => {
+    return {
+      dataKey: f.dataKey,
+      selectedValues: f.defaultValue || [],
+      allValues: extractFilterValues(f.dataKey, rows),
+      label: f.label
+    }
+  })
 }
 
-const extractFilterValues = (rows, filter) => {
-  const values = rows.map(r => r[filter.dataKey])
+const updateFilters = (filters, updateBy) => {
+  return filters.map(f => updateBy(f))
+}
+
+const extractFilterValues = (filterKey, rows) => {
+  const values = rows.map(r => r[filterKey])
   const dedup = [...new Set(values)]
   const sorted = dedup.some(x => typeof x !== 'number')
     ? dedup.sort()
@@ -80,13 +110,12 @@ const extractFilterValues = (rows, filter) => {
   return sorted
 }
 
-const allFiltersEmpty = filters => filters.every(f => !f.value.length)
+const allFiltersEmpty = filters => filters.every(f => !f.selectedValues.length)
 
 const filterRows = (rows, filters) => {
-  return allFiltersEmpty(filters)
-    ? rows
-    : rows.filter(r => filters.every(f =>
-      !f.value.length || f.value.includes(r[f.dataKey])))
+  return rows.filter(row =>
+    filters.every(f =>
+      !f.selectedValues.length || f.selectedValues.includes(row[f.dataKey])))
 }
 
 const styles = () => ({
